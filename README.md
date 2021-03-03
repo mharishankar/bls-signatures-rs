@@ -86,6 +86,11 @@ pub trait MultiSignature<PublicKey, SecretKey, Signature> {
 }
 ```
 
+## Running Examples ##
+Build: cargo build --all-targets 
+Execute: ./target/debug/examples/bn256_additional
+
+
 ## License
 
 `bls-signatures-rs` is published under the [MIT license](https://github.com/witnet/bls-signatures-rs/blob/master/LICENSE)
