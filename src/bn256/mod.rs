@@ -94,7 +94,7 @@ impl Bn256 {
     /// # Returns
     ///
     /// * If successful, a point in the `G1` group representing the hashed point.
-    fn hash_to_try_and_increment(&self, message: &[u8]) -> Result<G1, Error> {
+    pub fn hash_to_try_and_increment(&self, message: &[u8]) -> Result<G1, Error> {
         let mut c = 0..255;
 
         // Add counter suffix
@@ -140,7 +140,7 @@ impl Bn256 {
     /// # Returns
     ///
     /// * If successful, a `Vec<u8>` with the compressed `G1` point.
-    fn to_compressed_g1(&self, point: G1) -> Result<Vec<u8>, Error> {
+    pub fn to_compressed_g1(&self, point: G1) -> Result<Vec<u8>, Error> {
         // From Jacobian to Affine first!
         let affine_coords = AffineG1::from_jacobian(point).ok_or(Error::PointInJacobian)?;
         // Get X coordinate
@@ -160,6 +160,17 @@ impl Bn256 {
         result.append(&mut s.to_vec());
 
         Ok(result)
+    }
+
+    pub fn to_uncompressed_g1(&self, point: G1) -> Result<Vec<u8>, Error> {
+        let mut result: [u8; 32 * 2] = [0; (2 * 32)];
+        // From Jacobian to Affine first!
+        let affine_coords = AffineG1::from_jacobian(point).ok_or(Error::PointInJacobian)?;
+        // Get X coordinate
+        let x = Fq::into_u256(affine_coords.x()).to_big_endian(&mut result[0..32]);
+        // Get Y coordinate
+        let y = Fq::into_u256(affine_coords.y()).to_big_endian(&mut result[32..64]);
+        Ok(result.to_vec())
     }
 
     /// Function to get the digest given some input data using SHA256 algorithm.
@@ -185,7 +196,7 @@ impl Bn256 {
 pub struct PrivateKey(bn::Fr);
 
 /// The public key as point in G2
-pub struct PublicKey(bn::G2);
+pub struct PublicKey(pub bn::G2);
 
 impl PrivateKey {
     /// Function to derive a private key.
