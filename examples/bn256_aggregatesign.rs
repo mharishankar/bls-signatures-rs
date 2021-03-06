@@ -25,6 +25,17 @@ fn main() {
     }
     let encoded = hex::encode(&agg_sig);
     println!("\nAggregated Signature In Hex of Length {} \n {:?}\n\n", encoded.len(), &encoded);
+
+    println!("\nCompressed Public Key In Hex\n {:02X?}\n\n", &agg_pub_key);
+    let pubKeyUncompVec = PublicKey::from_compressed(&agg_pub_key).unwrap().to_uncompressed().unwrap();
+    let mut encoded = hex::encode(&pubKeyUncompVec[0..32]);
+    println!("Uncompressed Public Key X Real In Hex of Length {} \n {:02X?}\n\n", encoded.len(), &encoded);
+    encoded = hex::encode(&pubKeyUncompVec[32..64]);
+    println!("Uncompressed Public Key X Im In Hex of Length {} \n {:02X?}\n\n", encoded.len(), &encoded);
+    encoded = hex::encode(&pubKeyUncompVec[64..96]);
+    println!("Uncompressed Public Key Y Real In Hex of Length {} \n {:02X?}\n\n", encoded.len(), &encoded);
+    encoded = hex::encode(&pubKeyUncompVec[96..128]);
+    println!("Uncompressed Public Key Y Im In Hex of Length {} \n {:02X?}\n\n", encoded.len(), &encoded);
     // Bn256.verify(&agg_sig, &messageHexDec, &agg_pub_key).unwrap();
     // println!("Successful verification");
 }
